@@ -1,6 +1,28 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { useClerk, useUser, UserButton } from "@clerk/clerk-react";
+import { useEffect } from "react";
+
+const BookIcon = () => (
+  <svg
+    className="w-4 h-4 text-gray-700"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4"
+    />
+  </svg>
+);
 
 const Navbar = () => {
   const navLinks = [
@@ -10,16 +32,28 @@ const Navbar = () => {
     { name: "About", path: "/" },
   ];
 
-  const [isScrolled, setIsScrolled] = React.useState(false);
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  React.useEffect(() => {
+  const { openSignIn } = useClerk();
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+    setIsScrolled((prev) => (location.pathname !== "/" ? true : prev));
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <nav
@@ -60,6 +94,7 @@ const Navbar = () => {
           className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
             isScrolled ? "text-black" : "text-white"
           } transition-all`}
+          onClick={() => navigate("/owner")}
         >
           Dashboard
         </button>
@@ -76,13 +111,41 @@ const Navbar = () => {
         />
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        <button className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
-          Login
-        </button>
+
+        {user ? (
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="My Bookings"
+                labelIcon={<BookIcon />}
+                onClick={() => navigate("/my-bookings")}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
+        ) : (
+          <button
+            className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500"
+            onClick={openSignIn}
+          >
+            Login
+          </button>
+        )}
       </div>
 
       {/* Mobile Menu Button */}
+
       <div className="flex items-center gap-3 md:hidden">
+        {user && (
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Action
+                label="My Bookings"
+                labelIcon={<BookIcon />}
+                onClick={() => navigate("/my-bookings")}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
+        )}
         <img
           src={assets.menuIcon}
           alt=""
@@ -110,13 +173,23 @@ const Navbar = () => {
           </a>
         ))}
 
-        <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-          Dashboard
-        </button>
+        {user && (
+          <button
+            className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
+            onClick={() => navigate("/owner")}
+          >
+            Dashboard
+          </button>
+        )}
 
-        <button className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
-          Login
-        </button>
+        {!user && (
+          <button
+            className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500"
+            onClick={openSignIn}
+          >
+            Login
+          </button>
+        )}
       </div>
     </nav>
   );
