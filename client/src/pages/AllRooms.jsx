@@ -65,7 +65,7 @@ const AllRooms = () => {
           >
             <img
               onClick={() => {
-                navigate(`/rooms/${room._id}`);
+                navigate(`/room/${room._id}`);
                 scrollTo(0, 0);
               }}
               src={room.images[0]}
@@ -77,7 +77,7 @@ const AllRooms = () => {
               <p className="text-gray-500">{room.hotel.city}</p>
               <p
                 onClick={() => {
-                  navigate(`/rooms/${room._id}`);
+                  navigate(`/room/${room._id}`);
                   scrollTo(0, 0);
                 }}
                 className="text-gray-800 text-3xl font-playfair cursor-pointer"
