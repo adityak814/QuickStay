@@ -40,19 +40,30 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.pathname !== "/") {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-    setIsScrolled((prev) => (location.pathname !== "/" ? true : prev));
+  // useEffect(() => {
+  //   if (location.pathname !== "/") {
+  //     setIsScrolled(true);
+  //   } else {
+  //     setIsScrolled(false);
+  //   }
+  //   setIsScrolled((prev) => (location.pathname !== "/" ? true : prev));
 
-    const handleScroll = () => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 10);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname === "/") {
       setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+      const handleScroll = () => setIsScrolled(window.scrollY > 10);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else {
+      setIsScrolled(true);
+    }
   }, [location.pathname]);
 
   return (
