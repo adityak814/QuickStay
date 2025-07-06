@@ -19,6 +19,8 @@ const clerkWebhooks = async (req, res) => {
     //Getting data from request body
     const { data, type } = req.body;
 
+    console.log(JSON.stringify(data));
+
     const userData = {
       _id: data.id,
       email: data.email_addresses[0].email_address,
