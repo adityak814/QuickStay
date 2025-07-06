@@ -26,24 +26,34 @@ const clerkWebhooks = async (req, res) => {
       image: data.image_url,
     };
 
+    let user = null;
     //Switch case for different events
     switch (type) {
       case "user.created": {
-        await User.create(userData);
+        user = await User.create(userData);
+        console.log("Created user", user);
         break;
       }
       case "user.updated": {
-        await User.findByIdAndUpdate(data.id, userData);
+        user = await User.findByIdAndUpdate(data.id, userData);
+        console.log("Updated user", user);
         break;
       }
       case "user.deleted": {
-        await User.findByIdAndDelete(data.id);
+        user = await User.findByIdAndDelete(data.id);
+        console.log("Deleted user", user);
         break;
       }
 
       default:
+        console.log("Invalid type");
         break;
     }
+
+    if (!user) {
+      throw new Error("User is null");
+    }
+
     res.json({ success: true, message: "Webhook Received" });
   } catch (error) {
     console.log(error.message, error);
