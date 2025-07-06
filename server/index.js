@@ -24,6 +24,19 @@ app.get("/", (req, res) => {
   res.send("API is working fine");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on PORT: ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server is listening on PORT: ${PORT}`);
+// });
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server is listening on PORT: ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to MongoDB. Server not started.");
+  }
+};
+
+startServer();
