@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import userRouter from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -24,9 +25,7 @@ app.get("/", (req, res) => {
   res.send("API is working fine");
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server is listening on PORT: ${PORT}`);
-// });
+app.use("/api/user", userRouter);
 
 const startServer = async () => {
   try {
