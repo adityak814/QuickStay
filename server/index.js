@@ -5,6 +5,9 @@ import connectDB from "./configs/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoutes.js";
+import hotelRouter from "./routes/hotelRoutes.js";
+import connectCloudinary from "./configs/cloudinary.js";
+import roomRouter from "./routes/roomRoutes.js";
 
 dotenv.config();
 
@@ -26,10 +29,13 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userRouter);
+app.use("/api/hotels", hotelRouter);
+app.use("/api/rooms", roomRouter);
 
 const startServer = async () => {
   try {
     await connectDB();
+    await connectCloudinary();
     app.listen(PORT, () => {
       console.log(`Server is listening on PORT: ${PORT}`);
     });
