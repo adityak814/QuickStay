@@ -17,16 +17,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
 
-//Middleware
-app.use(express.json());
-app.use(clerkMiddleware());
-
 // API to listen to Stripe Webhooks
 app.post(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
 );
+
+//Middleware
+app.use(express.json());
+app.use(clerkMiddleware());
+
 
 // API to listen to Clerk Webhooks
 app.use("/api/clerk", clerkWebhooks);
