@@ -36,6 +36,7 @@ export const stripeWebhooks = async (request, response) => {
     const { bookingId } = session.data[0].metadata;
     // Mark Payment as Paid
     await Booking.findByIdAndUpdate(bookingId, {
+      status: "confirmed",
       isPaid: true,
       paymentMethod: "Stripe",
     });
