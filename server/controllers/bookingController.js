@@ -187,9 +187,10 @@ export const stripePayment = async (req, res) => {
       },
     });
 
+    console.log("Checkout Successful");
     res.json({ success: true, url: session.url });
   } catch (error) {
     console.log(error);
-    res.json({ success: true, message: "Payment Failed" });
+    res.json({ success: false, message: "Payment Failed" });
   }
 };
