@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { assets, facilityIcons } from "../assets/assets";
 import StarRating from "../components/StarRating";
 import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }) => {
   return (
@@ -33,7 +34,7 @@ const RadioButton = ({ label, selected = false, onChange = () => {} }) => {
 
 const AllRooms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { rooms, navigate, currency } = useAppContext();
+  const { user, rooms, navigate, currency } = useAppContext();
 
   const [openFilters, setOpenFilters] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -56,6 +57,13 @@ const AllRooms = () => {
     "Price High to Low",
     "Newest First",
   ];
+
+  useEffect(() => {
+    if (!user) {
+      toast("Login to View Hotels.");
+      navigate("/");
+    }
+  }, [user]);
 
   // Handle changes for filters and sorting
   const handleFilterChange = (checked, value, type) => {
