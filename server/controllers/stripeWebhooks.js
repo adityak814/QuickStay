@@ -3,8 +3,7 @@ import Booking from "../models/Booking.js";
 
 // API to handle Stripe Webhooks
 export const stripeWebhooks = async (request, response) => {
-  console.log("stripeWebhook called");
-  console.log(request.body);
+  console.log("StripeWebhook called");
   // Stripe Gateway Initialize
   const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
   const sig = request.headers["stripe-signature"];
@@ -14,7 +13,7 @@ export const stripeWebhooks = async (request, response) => {
     event = stripeInstance.webhooks.constructEvent(
       request.body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOKS_SECRET
     );
     console.log(event.type);
   } catch (err) {
@@ -26,8 +25,6 @@ export const stripeWebhooks = async (request, response) => {
   if (event.type === "payment_intent.succeeded") {
     const paymentIntent = event.data.object;
     const paymentIntentId = paymentIntent.id;
-
-    console.log("paymentIntentId");
 
     // Getting Session Metadata
     const session = await stripeInstance.checkout.sessions.list({
